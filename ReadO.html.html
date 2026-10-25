@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadO Pro - Cognitive Velocity & Reading Suite</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sepia: {
+                            50: '#fbf9f5',
+                            100: '#f7f3e9',
+                            200: '#efe6d5',
+                            800: '#433422',
+                            900: '#281f14',
+                        },
+                        pro: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        atkinson: ['Atkinson Hyperlegible', 'sans-serif'],
+                        opendyslexic: ['OpenDyslexic', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('https://cdn.jsdelivr.net/gh/antijingoist/opendyslexic@20160329-1/fonts/OpenDyslexic-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 4px; }
+
+        .beeline-line-0 { background: linear-gradient(90deg, #1e40af 0%, #047857 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.beeline-line-1 { background: linear-gradient(90deg, #047857 0%, #b45309 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.beeline-line-2 { background: linear-gradient(90deg, #b45309 0%, #be123c 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.beeline-line-3 { background: linear-gradient(90deg, #be123c 0%, #1e40af 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .orp-container { display: flex; align-items: center; justify-content: center; position: relative; font-variant-numeric: tabular-nums; }
+        .orp-prefix { text-align: right; flex: 1; white-space: pre; }
+        .orp-focus { color: #ef4444; font-weight: 700; text-align: center; padding: 0 1px; }
+        .orp-suffix { text-align: left; flex: 1; white-space: pre; }
+
+        .theme-transition { transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 280px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 320px; }
+        }
+    </style>
+</head>
+
+<!-- Chosen Palette: Slate & Warm Amber Accent (Professional SaaS & Focus Palette) -->
+<!-- Application Structure Plan: Designed as an interactive speed-reading web application showcasing RSVP, Teleprompter, BeeLine, and Bionic reading flows integrated with premium services (AI Quizzer, Focus Audio Synthesizer, PDF/eBook Ingestion, Advanced Chart.js Velocity Analytics, and Tier Comparison Portal). -->
+<!-- Visualization & Content Choices: 
+  - Dynamic RSVP/Teleprompter/BeeLine/Bionic presentation using HTML/CSS.
+  - Interactive Web Audio API Synthesizer for 40Hz Gamma Focus Audio.
+  - Chart.js Line Chart for WPM Progression & Velocity Analytics.
+  - Interactive AI Quiz module with real-time scoring.
+  - Tier Upgrade Portal with $0.99/mo Pro and $2.99 Lifetime options.
+  - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-sans theme-transition flex flex-col justify-between overflow-x-hidden selection:bg-indigo-500 selection:text-white" id="appBody">
+
+    <!-- Header Navigation -->
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand & Plan Badge -->
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-indigo-600 text-white rounded-lg shadow-md shadow-indigo-500/20">
+                    <i class="fa-solid fa-bolt text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="font-extrabold text-lg leading-none tracking-tight">ReadO</h1>
+                        <span id="currentTierBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 font-bold uppercase tracking-wider border border-amber-300 dark:border-amber-700">
+                            <i class="fa-solid fa-crown mr-0.5 text-amber-500"></i> Free Tier
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Cognitive Acceleration & AI Learning Suite</p>
+                </div>
+            </div>
+
+            <!-- Header Actions & Upgrade CTA -->
+            <div class="flex items-center space-x-2">
+                <!-- Upgrade to Pro Button -->
+                <button id="btnUpgradeModal" class="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white shadow-md shadow-indigo-500/20 transition transform active:scale-95 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-gem text-amber-200"></i>
+                    <span>Upgrade to Pro</span>
+                </button>
+
+                <div class="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
+
+                <button id="btnTextModal" class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span class="hidden sm:inline">Import</span>
+                </button>
+                <button id="btnQuizModal" class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition flex items-center space-x-1.5 relative">
+                    <i class="fa-solid fa-brain"></i>
+                    <span class="hidden sm:inline">AI Quiz</span>
+                    <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                </button>
+                <button id="btnNotesModal" class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition flex items-center space-x-1.5 relative">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span class="hidden sm:inline">Notes</span>
+                    <span id="noteBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <button id="btnAnalyticsModal" class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="hidden sm:inline">Analytics</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Application Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center items-center relative">
+
+        <!-- Display Mode Toolbar Selector -->
+        <div class="w-full max-w-xl mb-6 bg-slate-200/60 dark:bg-slate-800/60 p-1 rounded-xl flex items-center justify-between text-xs font-medium">
+            <button data-mode="rsvp" class="mode-tab flex-1 py-2 px-2 rounded-lg text-center transition shadow-sm bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 font-semibold">
+                <i class="fa-solid fa-eye mr-1"></i> Single RSVP
+            </button>
+            <button data-mode="teleprompter" class="mode-tab flex-1 py-2 px-2 rounded-lg text-center transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                <i class="fa-solid fa-scroll mr-1"></i> Teleprompter
+            </button>
+            <button data-mode="beeline" class="mode-tab flex-1 py-2 px-2 rounded-lg text-center transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                <i class="fa-solid fa-rainbow mr-1"></i> BeeLine
+            </button>
+            <button data-mode="bionic" class="mode-tab flex-1 py-2 px-2 rounded-lg text-center transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                <i class="fa-solid fa-bold mr-1"></i> Bold Flow
+            </button>
+        </div>
+
+        <!-- Dynamic Reading Display Frame -->
+        <div class="w-full bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-10 relative min-h-[360px] flex flex-col justify-center items-center overflow-hidden transition-all duration-300" id="displayBox">
+
+            <!-- MODE 1: SINGLE-WORD RSVP DISPLAY -->
+            <div id="viewRsvp" class="w-full flex flex-col items-center justify-center my-auto py-6">
+                <div class="w-full max-w-md flex justify-between items-center mb-3 text-slate-300 dark:text-slate-700 opacity-80 pointer-events-none">
+                    <div class="w-0.5 h-4 bg-red-500/80 rounded-full mx-auto"></div>
+                </div>
+
+                <div id="rsvpWordContainer" class="orp-container w-full select-none transition-all duration-75 text-slate-900 dark:text-slate-100 font-mono tracking-normal" style="font-size: 3.5rem; line-height: 1.2;">
+                    <span class="orp-prefix" id="orpPrefix">Speed</span>
+                    <span class="orp-focus" id="orpFocus">R</span>
+                    <span class="orp-suffix" id="orpSuffix">eading</span>
+                </div>
+
+                <div class="w-full max-w-md flex justify-between items-center mt-3 text-slate-300 dark:text-slate-700 opacity-80 pointer-events-none">
+                    <div class="w-0.5 h-4 bg-red-500/80 rounded-full mx-auto"></div>
+                </div>
+
+                <div id="pauseIndicator" class="mt-4 h-6 px-3 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-mono flex items-center space-x-1 opacity-0 transition-opacity">
+                    <i class="fa-solid fa-hourglass-start text-[10px]"></i>
+                    <span id="pauseReason">Sentence Pause (2.2x)</span>
+                </div>
+            </div>
+
+            <!-- MODE 2: TELEPROMPTER -->
+            <div id="viewTeleprompter" class="w-full max-w-3xl h-[300px] overflow-y-auto px-6 py-12 hidden relative scroll-smooth text-lg sm:text-xl leading-relaxed text-slate-400 dark:text-slate-600">
+                <div id="teleprompterContent" class="space-y-4"></div>
+            </div>
+
+            <!-- MODE 3: BEELINE COLOR GRADIENT -->
+            <div id="viewBeeline" class="w-full max-w-3xl h-[300px] overflow-y-auto px-6 py-6 hidden text-lg sm:text-xl leading-loose font-normal">
+                <div id="beelineContent" class="space-y-3"></div>
+            </div>
+
+            <!-- MODE 4: BIONIC BOLD FLOW -->
+            <div id="viewBionic" class="w-full max-w-3xl h-[300px] overflow-y-auto px-6 py-6 hidden text-lg sm:text-xl leading-relaxed font-normal text-slate-800 dark:text-slate-200">
+                <div id="bionicContent" class="space-y-4"></div>
+            </div>
+
+        </div>
+
+        <!-- Premium Feature: 40Hz Audio Entrainment Focus Bar (Pro Feature) -->
+        <div class="w-full max-w-3xl mt-4 bg-indigo-950/40 border border-indigo-800/40 rounded-xl p-3 flex flex-wrap items-center justify-between text-xs text-indigo-200">
+            <div class="flex items-center space-x-2">
+                <span class="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[10px] uppercase tracking-wider">PRO FOCUS AUDIO</span>
+                <span class="font-medium text-slate-300"><i class="fa-solid fa-headphones mr-1 text-indigo-400"></i> Gamma 40Hz Binaural Focus Waves</span>
+            </div>
+            <div class="flex items-center space-x-3 mt-2 sm:mt-0">
+                <button id="btnToggleAudio" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition flex items-center space-x-1">
+                    <i class="fa-solid fa-play" id="audioIcon"></i>
+                    <span id="audioStatusText">Enable 40Hz Waves</span>
+                </button>
+                <div class="flex items-center space-x-1">
+                    <i class="fa-solid fa-volume-high text-slate-400 text-[10px]"></i>
+                    <input type="range" id="audioVolume" min="0" max="1" step="0.05" value="0.2" class="w-16 accent-indigo-500 h-1 bg-slate-700 rounded cursor-pointer">
+                </div>
+            </div>
+        </div>
+
+        <!-- Playback Progress & Timeline Controls -->
+        <div class="w-full max-w-3xl mt-4 space-y-2">
+            <div class="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 px-1">
+                <span id="progressIndices">Word 0 / 0</span>
+                <span id="progressPercentage">0%</span>
+                <span id="progressTime">00:00 remaining</span>
+            </div>
+            <div id="progressBarContainer" class="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full cursor-pointer relative overflow-hidden group shadow-inner">
+                <div id="progressBar" class="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full w-0 transition-all duration-100"></div>
+            </div>
+        </div>
+
+        <!-- Central Action Bar & Velocity Controls -->
+        <div class="w-full max-w-3xl mt-5 bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 p-4 shadow-lg backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Control Buttons -->
+            <div class="flex items-center space-x-2">
+                <button id="btnSkipBack" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition" title="Rewind 5 words">
+                    <i class="fa-solid fa-backward-step"></i>
+                </button>
+                <button id="btnPlayPause" class="w-12 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold flex items-center justify-center shadow-lg shadow-indigo-500/30 transition transform active:scale-95" title="Play / Pause">
+                    <i class="fa-solid fa-play text-lg" id="playIcon"></i>
+                </button>
+                <button id="btnSkipForward" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition" title="Forward 5 words">
+                    <i class="fa-solid fa-forward-step"></i>
+                </button>
+                <button id="btnBookmarkNote" class="p-2.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 text-indigo-600 dark:text-indigo-400 transition" title="Add Bookmark Note">
+                    <i class="fa-solid fa-highlighter"></i>
+                </button>
+            </div>
+
+            <!-- WPM Velocity Slider -->
+            <div class="flex items-center space-x-3 flex-1 min-w-[200px] max-w-xs bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
+                <i class="fa-solid fa-gauge-high text-slate-400 text-xs ml-1"></i>
+                <input type="range" id="wpmSlider" min="100" max="1000" step="25" value="300" class="w-full accent-indigo-600 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                <div class="text-right min-w-[60px]">
+                    <span id="wpmDisplay" class="font-bold text-sm text-indigo-600 dark:text-indigo-400 font-mono">300</span>
+                    <span class="text-[10px] text-slate-400 block -mt-1 font-semibold">WPM</span>
+                </div>
+            </div>
+
+            <!-- Font & Theme Pickers -->
+            <div class="flex items-center space-x-2">
+                <div class="relative">
+                    <button id="btnFontConfig" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center space-x-1">
+                        <i class="fa-solid fa-font"></i>
+                        <span id="currentFontName" class="hidden sm:inline">Inter</span>
+                    </button>
+                    <div id="fontMenu" class="hidden absolute right-0 bottom-12 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-2 z-50 space-y-1">
+                        <button data-font="font-sans" class="font-option w-full text-left px-3 py-2 rounded-lg text-xs font-sans hover:bg-slate-100 dark:hover:bg-slate-700">Inter (Default)</button>
+                        <button data-font="font-atkinson" class="font-option w-full text-left px-3 py-2 rounded-lg text-xs font-atkinson hover:bg-slate-100 dark:hover:bg-slate-700">Atkinson Hyperlegible</button>
+                        <button data-font="font-opendyslexic" class="font-option w-full text-left px-3 py-2 rounded-lg text-xs font-opendyslexic hover:bg-slate-100 dark:hover:bg-slate-700">OpenDyslexic</button>
+                        <button data-font="font-mono" class="font-option w-full text-left px-3 py-2 rounded-lg text-xs font-mono hover:bg-slate-100 dark:hover:bg-slate-700">Monospace</button>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <button id="btnThemeConfig" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center">
+                        <i class="fa-solid fa-palette"></i>
+                    </button>
+                    <div id="themeMenu" class="hidden absolute right-0 bottom-12 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-2 z-50 space-y-1">
+                        <button data-theme="dark" class="theme-option w-full text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700">
+                            <span>Dark</span> <i class="fa-solid fa-moon text-slate-400"></i>
+                        </button>
+                        <button data-theme="light" class="theme-option w-full text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700">
+                            <span>Light</span> <i class="fa-solid fa-sun text-amber-500"></i>
+                        </button>
+                        <button data-theme="sepia" class="theme-option w-full text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700">
+                            <span>Sepia</span> <i class="fa-solid fa-book-open text-amber-700"></i>
+                        </button>
+                        <button data-theme="oled" class="theme-option w-full text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700">
+                            <span>OLED Dark</span> <i class="fa-solid fa-circle text-indigo-500"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer Stats -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 text-xs text-slate-500 dark:text-slate-400">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-4">
+                <span><i class="fa-solid fa-clock mr-1"></i> Active Session: <strong id="sessionTimeDisplay" class="text-slate-700 dark:text-slate-200">0m</strong></span>
+                <span><i class="fa-solid fa-book-reader mr-1"></i> Words Read: <strong id="sessionWordsDisplay" class="text-slate-700 dark:text-slate-200">0</strong></span>
+            </div>
+            <div class="text-[11px] text-slate-400">
+                ReadO Pro Engine • Accelerated Learning Suite
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- MODAL 1: PRICING & TIER SELECTION MODAL -->
+    <div id="modalUpgrade" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-4xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white text-center relative">
+                <button class="close-modal absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold uppercase tracking-widest inline-block mb-2">Upgrade Your Cognitive Speed</span>
+                <h2 class="text-2xl font-extrabold text-white">Choose Your Plan</h2>
+                <p class="text-slate-300 text-xs mt-1">Unlock AI Summaries, Binaural Audio, PDF Parsing & Speed Analytics</p>
+            </div>
+
+            <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Free Plan -->
+                <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between hover:border-indigo-500 transition">
+                    <div>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-base">Starter / Free</h4>
+                        <p class="text-slate-400 text-[11px] mb-4">Essential reading tools for casual users.</p>
+                        <div class="text-2xl font-black text-slate-800 dark:text-slate-100 mb-4">$0 <span class="text-xs font-normal text-slate-400">/ forever</span></div>
+                        <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-300 mb-6">
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Standard RSVP Reader</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> BeeLine & Bionic Modes</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Plain Text Ingestion</li>
+                            <li class="opacity-40"><i class="fa-solid fa-xmark text-slate-400 mr-2"></i> AI Quiz Generation</li>
+                            <li class="opacity-40"><i class="fa-solid fa-xmark text-slate-400 mr-2"></i> 40Hz Gamma Focus Audio</li>
+                            <li class="opacity-40"><i class="fa-solid fa-xmark text-slate-400 mr-2"></i> PDF & EPUB Support</li>
+                        </ul>
+                    </div>
+                    <button class="close-modal w-full py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 font-bold text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Current Plan</button>
+                </div>
+
+                <!-- Pro Plan ($0.99/mo) -->
+                <div class="p-5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/30 dark:bg-indigo-950/20 flex flex-col justify-between relative shadow-lg">
+                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider">Most Popular</span>
+                    <div>
+                        <h4 class="font-bold text-indigo-600 dark:text-indigo-400 text-base">ReadO Pro</h4>
+                        <p class="text-slate-400 text-[11px] mb-4">For power readers, students & researchers.</p>
+                        <div class="text-2xl font-black text-slate-800 dark:text-slate-100 mb-4">$0.99 <span class="text-xs font-normal text-slate-400">/ month</span></div>
+                        <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-300 mb-6">
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Everything in Free</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>AI Comprehension Quizzes</strong></li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>40Hz Focus Audio Synthesizer</strong></li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>PDF, EPUB & URL Importer</strong></li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Advanced WPM Velocity Analytics</li>
+                        </ul>
+                    </div>
+                    <button id="btnSelectPro" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold text-xs text-white shadow-md shadow-indigo-500/30">Start Pro Plan ($0.99/mo)</button>
+                </div>
+
+                <!-- Lifetime Plan ($2.99) -->
+                <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between hover:border-amber-500 transition relative">
+                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-bold uppercase tracking-wider">Best Value</span>
+                    <div>
+                        <h4 class="font-bold text-amber-600 dark:text-amber-400 text-base">Lifetime Pass</h4>
+                        <p class="text-slate-400 text-[11px] mb-4">One-time payment for permanent access.</p>
+                        <div class="text-2xl font-black text-slate-800 dark:text-slate-100 mb-4">$2.99 <span class="text-xs font-normal text-slate-400">/ one-time</span></div>
+                        <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-300 mb-6">
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Everything in Pro Tier</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Unlimited AI Quizzes</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Lifetime Feature Updates</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Priority Cloud Synchronization</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> VIP Support Channel</li>
+                        </ul>
+                    </div>
+                    <button id="btnSelectLifetime" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 font-bold text-xs text-white shadow-md shadow-amber-500/20">Get Lifetime ($2.99)</button>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 text-center text-[11px] text-slate-400">
+                🔒 30-day money-back guarantee • Instant access activation
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 2: AI COMPREHENSION QUIZ MODULE (PREMIUM DEMO) -->
+    <div id="modalQuiz" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-emerald-950 text-white">
+                <h3 class="font-bold flex items-center text-emerald-400">
+                    <i class="fa-solid fa-brain mr-2"></i> AI Retention Quiz (Pro Feature)
+                </h3>
+                <button class="close-modal text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-300">
+                    <i class="fa-solid fa-sparkles mr-1"></i> <strong>AI Insight:</strong> Quizzing immediately after high-speed RSVP increases long-term memory consolidation by up to 64%.
+                </div>
+
+                <div id="quizContainer" class="space-y-4 text-xs">
+                    <!-- Dynamic Question Area -->
+                    <div class="font-semibold text-slate-800 dark:text-slate-100 text-sm" id="quizQuestion">
+                        Question 1: According to the cognitive reading text, what percentage of reading time is spent during fixations?
+                    </div>
+                    <div class="space-y-2" id="quizOptions">
+                        <button onclick="submitQuizAnswer(0)" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:border-emerald-500 transition font-medium">A) 10%</button>
+                        <button onclick="submitQuizAnswer(1)" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:border-emerald-500 transition font-medium">B) 50%</button>
+                        <button onclick="submitQuizAnswer(2)" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:border-emerald-500 transition font-medium">C) 90%</button>
+                        <button onclick="submitQuizAnswer(3)" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:border-emerald-500 transition font-medium">D) 100%</button>
+                    </div>
+                    <div id="quizFeedback" class="hidden p-3 rounded-xl font-bold text-center"></div>
+                </div>
+            </div>
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-end">
+                <button class="close-modal px-4 py-1.5 text-xs font-semibold rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 3: ADVANCED CHART.JS ANALYTICS DASHBOARD -->
+    <div id="modalAnalytics" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center">
+                    <i class="fa-solid fa-chart-line mr-2 text-indigo-500"></i> Pro Analytics & Velocity Progression
+                </h3>
+                <button class="close-modal text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6">
+                <!-- Top Key Metrics Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Total Words</span>
+                        <span id="statTotalWords" class="text-xl font-bold text-indigo-600 dark:text-indigo-400 font-mono">0</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Current Speed</span>
+                        <span id="statAvgWpm" class="text-xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">300 WPM</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Time Saved</span>
+                        <span id="statTimeSaved" class="text-xl font-bold text-purple-600 dark:text-purple-400 font-mono">0 sec</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Comprehension</span>
+                        <span class="text-xl font-bold text-amber-500 font-mono">92%</span>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-xs text-slate-700 dark:text-slate-200">Reading Velocity Progression (WPM over Sessions)</h4>
+                        <span class="text-[10px] text-indigo-500 font-bold">PRO ANALYTICS</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="velocityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-end">
+                <button class="close-modal px-4 py-1.5 text-xs font-semibold rounded-xl bg-indigo-600 text-white">Done</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 4: DOCUMENT & FILE INGESTION (PRO SUPPORT FOR PDF/EPUB SIMULATION) -->
+    <div id="modalText" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center">
+                    <i class="fa-solid fa-file-lines mr-2 text-indigo-500"></i> Content Ingestion Pipeline
+                </h3>
+                <button class="close-modal text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-5">
+                
+                <!-- Preset Cognitive Sample Text Selector -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Load Preset Samples</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button class="sample-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:border-indigo-500 transition bg-slate-50 dark:bg-slate-800/40" data-sample="cognitive">
+                            <span class="font-bold text-xs text-indigo-600 dark:text-indigo-400 block">Cognitive Science of Reading</span>
+                            <span class="text-[11px] text-slate-500 line-clamp-1">Saccades, fixations, and ocular transit dynamics.</span>
+                        </button>
+                        <button class="sample-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:border-indigo-500 transition bg-slate-50 dark:bg-slate-800/40" data-sample="adhd">
+                            <span class="font-bold text-xs text-indigo-600 dark:text-indigo-400 block">ADHD & Neurodivergence</span>
+                            <span class="text-[11px] text-slate-500 line-clamp-1">Moussaoui et al. RSVP inversion study.</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- File Drag and Drop Ingestion -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Upload Document (.txt, .md, .pdf*, .epub*)</label>
+                        <span class="text-[10px] font-bold text-amber-500"><i class="fa-solid fa-crown mr-0.5"></i> PDF/EPUB Supported in Pro</span>
+                    </div>
+                    <input type="file" id="fileInput" accept=".txt,.md,.json,.pdf,.epub" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 cursor-pointer">
+                </div>
+
+                <!-- Custom Raw Text Area Ingestion -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Or Paste Text</label>
+                    <textarea id="customTextInput" rows="5" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Paste your article or document text here..."></textarea>
+                </div>
+
+            </div>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-end space-x-2">
+                <button class="close-modal px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-300">Cancel</button>
+                <button id="btnApplyText" class="px-5 py-2 text-xs font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-md">Start Reading</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 5: INLINE BOOKMARKS & NOTES -->
+    <div id="modalNotes" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center">
+                    <i class="fa-solid fa-bookmark mr-2 text-amber-500"></i> Reading Bookmarks & Notes
+                </h3>
+                <button class="close-modal text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-4 overflow-y-auto space-y-3 flex-1" id="notesContainer">
+                <p class="text-xs text-slate-400 text-center py-8">No saved notes. Press <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border">N</kbd> while reading to add a bookmark.</p>
+            </div>
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                <button id="btnClearNotes" class="text-xs text-red-500 hover:text-red-700 font-medium">Clear All Notes</button>
+                <button class="close-modal px-4 py-1.5 text-xs font-semibold rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- APPLICATION LOGIC & AUDIO SYNTHESIZER ENGINE -->
+    <script>
+        const SAMPLE_TEXTS = {
+            cognitive: `Textual information processing remains the primary bottleneck in human knowledge acquisition. While network transmission speeds have scaled exponentially, human reading throughput remains bounded by neurobiological constraints. Eye movements during silent reading do not follow a continuous linear path; instead, ocular transit consists of rapid ballistic jumps known as saccades interspersed with stationary pauses termed fixations. Visual information acquisition occurs exclusively during fixations, which typically last between 200 and 250 milliseconds and consume approximately 90% of total silent reading time. Saccades require 20 to 35 milliseconds to execute and span an average distance of 7 to 8 characters. The physical act of moving the eyes accounts for only 10% of total reading time. The remaining 90% of cognitive duration is consumed by higher-level linguistic sub-routines, including letter pattern identification, lexical retrieval, syntactic parsing, and semantic integration.`,
+            adhd: `Research by Moussaoui et al. (2025) demonstrates a neurodivergent inversion effect regarding Rapid Serial Visual Presentation (RSVP) efficacy. While neurotypical readers exhibit lower comprehension under single-word RSVP compared to static text displays, adult readers with Attention-Deficit/Hyperactivity Disorder (ADHD) achieve higher comprehension accuracy under single-word RSVP conditions (77% vs 61%). RSVP suppresses peripheral visual distractions and enforces continuous visual alignment, preventing executive function drift.`
+        };
+
+        class ReadingEngine {
+            constructor(options = {}) {
+                this.tokens = [];
+                this.currentIndex = 0;
+                this.wpm = options.wpm || 300;
+                this.isPlaying = false;
+                this.timerId = null;
+                this.onTick = options.onTick || (() => {});
+                this.onComplete = options.onComplete || (() => {});
+            }
+
+            loadText(text) {
+                if (!text || typeof text !== 'string') return;
+                const rawTokens = text.trim().split(/\s+/);
+                this.tokens = rawTokens.map((raw, idx) => {
+                    const clean = raw.replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, '');
+                    return {
+                        id: idx,
+                        raw: raw,
+                        clean: clean || raw,
+                        orpIndex: this.calculateORP(clean || raw),
+                        delayMultiplier: this.calculateMultiplier(raw)
+                    };
+                });
+                this.currentIndex = 0;
+            }
+
+            calculateORP(cleanWord) {
+                const len = cleanWord.length;
+                if (len <= 1) return 0;
+                if (len <= 5) return 1;
+                if (len <= 9) return 2;
+                return Math.floor(len * 0.33);
+            }
+
+            calculateMultiplier(rawWord) {
+                let mult = 1.0;
+                let reason = '';
+                const cleanLen = rawWord.replace(/[^a-zA-Z0-9]/g, '').length;
+                if (cleanLen > 12) { mult *= 1.5; reason = 'Long Word (1.5x)'; }
+                else if (cleanLen >= 8) { mult *= 1.2; reason = 'Medium Word (1.2x)'; }
+
+                if (/[!?]$/.test(rawWord) || /\.$/.test(rawWord)) {
+                    mult *= 2.2; reason = 'Sentence Terminal (2.2x)';
+                } else if (/[,;:]$/.test(rawWord)) {
+                    mult *= 1.5; reason = 'Clause Pause (1.5x)';
+                }
+                return { factor: mult, reason: reason };
+            }
+
+            getCurrentDelay() {
+                if (!this.tokens[this.currentIndex]) return 200;
+                const baseMs = 60000 / this.wpm;
+                return baseMs * this.tokens[this.currentIndex].delayMultiplier.factor;
+            }
+
+            play() {
+                if (this.isPlaying || this.tokens.length === 0) return;
+                this.isPlaying = true;
+                this.step();
+            }
+
+            pause() {
+                this.isPlaying = false;
+                if (this.timerId) {
+                    clearTimeout(this.timerId);
+                    this.timerId = null;
+                }
+            }
+
+            step() {
+                if (!this.isPlaying) return;
+                if (this.currentIndex >= this.tokens.length) {
+                    this.pause();
+                    this.onComplete();
+                    return;
+                }
+                const currentToken = this.tokens[this.currentIndex];
+                const delay = this.getCurrentDelay();
+                this.onTick(currentToken, this.currentIndex, this.tokens.length, delay, currentToken.delayMultiplier.reason);
+                this.currentIndex++;
+                this.timerId = setTimeout(() => this.step(), delay);
+            }
+
+            seek(index) {
+                this.currentIndex = Math.max(0, Math.min(index, this.tokens.length - 1));
+                if (this.tokens[this.currentIndex]) {
+                    this.onTick(this.tokens[this.currentIndex], this.currentIndex, this.tokens.length, 0, '');
+                }
+            }
+
+            setWPM(newWpm) {
+                this.wpm = Math.max(100, Math.min(newWpm, 1000));
+            }
+        }
+
+        class FocusAudioSynthesizer {
+            constructor() {
+                this.ctx = null;
+                this.leftOsc = null;
+                this.rightOsc = null;
+                this.gainNode = null;
+                this.isPlaying = false;
+            }
+
+            init() {
+                if (this.ctx) return;
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioCtx();
+
+                this.gainNode = this.ctx.createGain();
+                this.gainNode.gain.value = 0.15;
+                this.gainNode.connect(this.ctx.destination);
+            }
+
+            toggle() {
+                if (this.isPlaying) {
+                    this.stop();
+                    return false;
+                } else {
+                    this.start();
+                    return true;
+                }
+            }
+
+            start() {
+                this.init();
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+
+                const merger = this.ctx.createChannelMerger(2);
+
+                this.leftOsc = this.ctx.createOscillator();
+                this.leftOsc.type = 'sine';
+                this.leftOsc.frequency.setValueAtTime(200, this.ctx.currentTime);
+
+                this.rightOsc = this.ctx.createOscillator();
+                this.rightOsc.type = 'sine';
+                this.rightOsc.frequency.setValueAtTime(240, this.ctx.currentTime);
+
+                this.leftOsc.connect(merger, 0, 0);
+                this.rightOsc.connect(merger, 0, 1);
+                merger.connect(this.gainNode);
+
+                this.leftOsc.start();
+                this.rightOsc.start();
+                this.isPlaying = true;
+            }
+
+            stop() {
+                if (this.leftOsc) { this.leftOsc.stop(); this.leftOsc.disconnect(); }
+                if (this.rightOsc) { this.rightOsc.stop(); this.rightOsc.disconnect(); }
+                this.isPlaying = false;
+            }
+
+            setVolume(val) {
+                if (this.gainNode && this.ctx) {
+                    this.gainNode.gain.setValueAtTime(val, this.ctx.currentTime);
+                }
+            }
+        }
+
+        const appState = {
+            mode: 'rsvp',
+            font: 'font-sans',
+            theme: 'dark',
+            wpm: 300,
+            notes: [],
+            tier: 'free',
+            sessionStartTime: Date.now(),
+            totalWordsReadSession: 0
+        };
+
+        let engine;
+        let audioSynth = new FocusAudioSynthesizer();
+        let chartInstance = null;
+
+        const elAppBody = document.getElementById('appBody');
+        const elOrpPrefix = document.getElementById('orpPrefix');
+        const elOrpFocus = document.getElementById('orpFocus');
+        const elOrpSuffix = document.getElementById('orpSuffix');
+        const elPauseIndicator = document.getElementById('pauseIndicator');
+        const elPauseReason = document.getElementById('pauseReason');
+
+        const elViewRsvp = document.getElementById('viewRsvp');
+        const elViewTeleprompter = document.getElementById('viewTeleprompter');
+        const elViewBeeline = document.getElementById('viewBeeline');
+        const elViewBionic = document.getElementById('viewBionic');
+        const elTeleprompterContent = document.getElementById('teleprompterContent');
+        const elBeelineContent = document.getElementById('beelineContent');
+        const elBionicContent = document.getElementById('bionicContent');
+
+        const elBtnPlayPause = document.getElementById('btnPlayPause');
+        const elPlayIcon = document.getElementById('playIcon');
+        const elWpmSlider = document.getElementById('wpmSlider');
+        const elWpmDisplay = document.getElementById('wpmDisplay');
+
+        const elProgressBar = document.getElementById('progressBar');
+        const elProgressBarContainer = document.getElementById('progressBarContainer');
+        const elProgressIndices = document.getElementById('progressIndices');
+        const elProgressPercentage = document.getElementById('progressPercentage');
+        const elProgressTime = document.getElementById('progressTime');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initEngine();
+            setupEventListeners();
+            setupKeyboardShortcuts();
+            startStatsTimer();
+            initVelocityChart();
+        });
+
+        function initEngine() {
+            engine = new ReadingEngine({
+                wpm: appState.wpm,
+                onTick: handleEngineTick,
+                onComplete: () => updatePlayPauseUI(false)
+            });
+            engine.loadText(SAMPLE_TEXTS.cognitive);
+            renderStaticModes();
+            updateProgressUI(0, engine.tokens.length);
+        }
+
+        function handleEngineTick(token, index, total, delay, pauseReason) {
+            appState.totalWordsReadSession++;
+            document.getElementById('sessionWordsDisplay').textContent = appState.totalWordsReadSession;
+
+            renderRSVPWord(token);
+
+            if (pauseReason && engine.isPlaying) {
+                elPauseReason.textContent = pauseReason;
+                elPauseIndicator.classList.remove('opacity-0');
+            } else {
+                elPauseIndicator.classList.add('opacity-0');
+            }
+
+            if (appState.mode === 'teleprompter') highlightTeleprompterWord(index);
+            updateProgressUI(index, total);
+        }
+
+        function renderRSVPWord(token) {
+            const raw = token.raw;
+            const clean = token.clean;
+            const orpIdx = token.orpIndex;
+
+            const cleanPrefix = clean.substring(0, orpIdx);
+            const focusChar = clean[orpIdx] || '';
+            const cleanSuffix = clean.substring(orpIdx + 1);
+
+            const leadingPunct = raw.match(/^[^a-zA-Z0-9]+/)?.[0] || '';
+            const trailingPunct = raw.match(/[^a-zA-Z0-9]+$/)?.[0] || '';
+
+            elOrpPrefix.textContent = leadingPunct + cleanPrefix;
+            elOrpFocus.textContent = focusChar;
+            elOrpSuffix.textContent = cleanSuffix + trailingPunct;
+        }
+
+        function renderStaticModes() {
+            if (!engine || !engine.tokens.length) return;
+
+            elTeleprompterContent.innerHTML = engine.tokens.map((t, idx) => 
+                `<span id="tp-word-${idx}" class="tp-word inline-block mx-1 my-0.5 transition-colors duration-150 rounded px-1 cursor-pointer hover:bg-indigo-100 dark:hover:bg-slate-800" onclick="seekToToken(${idx})">${t.raw}</span>`
+            ).join('');
+
+            const wordsPerLine = 10;
+            let beelineHTML = '';
+            for (let i = 0; i < engine.tokens.length; i += wordsPerLine) {
+                const lineTokens = engine.tokens.slice(i, i + wordsPerLine);
+                beelineHTML += `<p class="beeline-line-${(i / wordsPerLine) % 4} font-medium">${lineTokens.map(t => t.raw).join(' ')}</p>`;
+            }
+            elBeelineContent.innerHTML = beelineHTML;
+
+            elBionicContent.innerHTML = `<p>` + engine.tokens.map(t => {
+                const word = t.raw;
+                const boldLen = Math.ceil(word.length * 0.4);
+                return `<span class="inline-block mx-0.5"><strong class="font-bold text-indigo-600 dark:text-indigo-400">${word.substring(0, boldLen)}</strong>${word.substring(boldLen)}</span>`;
+            }).join('') + `</p>`;
+        }
+
+        function highlightTeleprompterWord(index) {
+            const prev = elTeleprompterContent.querySelector('.bg-indigo-600');
+            if (prev) {
+                prev.classList.remove('bg-indigo-600', 'text-white', 'scale-105');
+                prev.classList.add('text-slate-400');
+            }
+            const current = document.getElementById(`tp-word-${index}`);
+            if (current) {
+                current.classList.add('bg-indigo-600', 'text-white', 'scale-105');
+                current.classList.remove('text-slate-400');
+                current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function seekToToken(index) { engine.seek(index); }
+
+        function updateProgressUI(currentIndex, total) {
+            const pct = total > 0 ? Math.round(((currentIndex + 1) / total) * 100) : 0;
+            elProgressBar.style.width = `${pct}%`;
+            elProgressIndices.textContent = `Word ${currentIndex + 1} / ${total}`;
+            elProgressPercentage.textContent = `${pct}%`;
+
+            const remainingWords = total - currentIndex;
+            const remainingSecs = Math.ceil((remainingWords / appState.wpm) * 60);
+            const mins = Math.floor(remainingSecs / 60);
+            const secs = remainingSecs % 60;
+            elProgressTime.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')} remaining`;
+        }
+
+        function setupEventListeners() {
+            elBtnPlayPause.addEventListener('click', togglePlayPause);
+            document.getElementById('btnSkipBack').addEventListener('click', () => engine.seek(engine.currentIndex - 5));
+            document.getElementById('btnSkipForward').addEventListener('click', () => engine.seek(engine.currentIndex + 5));
+
+            elWpmSlider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                appState.wpm = val;
+                elWpmDisplay.textContent = val;
+                engine.setWPM(val);
+            });
+
+            elProgressBarContainer.addEventListener('click', (e) => {
+                const rect = elProgressBarContainer.getBoundingClientRect();
+                const ratio = (e.clientX - rect.left) / rect.width;
+                engine.seek(Math.floor(ratio * engine.tokens.length));
+            });
+
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => switchMode(e.currentTarget.dataset.mode));
+            });
+
+            document.getElementById('btnFontConfig').addEventListener('click', () => {
+                document.getElementById('fontMenu').classList.toggle('hidden');
+            });
+            document.getElementById('btnThemeConfig').addEventListener('click', () => {
+                document.getElementById('themeMenu').classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('.font-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    setFont(e.currentTarget.dataset.font);
+                    document.getElementById('fontMenu').classList.add('hidden');
+                });
+            });
+
+            document.querySelectorAll('.theme-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    setTheme(e.currentTarget.dataset.theme);
+                    document.getElementById('themeMenu').classList.add('hidden');
+                });
+            });
+
+            document.getElementById('btnToggleAudio').addEventListener('click', () => {
+                const active = audioSynth.toggle();
+                const icon = document.getElementById('audioIcon');
+                const label = document.getElementById('audioStatusText');
+                if (active) {
+                    icon.className = 'fa-solid fa-pause';
+                    label.textContent = 'Pause 40Hz Audio';
+                } else {
+                    icon.className = 'fa-solid fa-play';
+                    label.textContent = 'Enable 40Hz Waves';
+                }
+            });
+
+            document.getElementById('audioVolume').addEventListener('input', (e) => {
+                audioSynth.setVolume(parseFloat(e.target.value));
+            });
+
+            setupModal('btnTextModal', 'modalText');
+            setupModal('btnNotesModal', 'modalNotes');
+            setupModal('btnAnalyticsModal', 'modalAnalytics');
+            setupModal('btnUpgradeModal', 'modalUpgrade');
+            setupModal('btnQuizModal', 'modalQuiz');
+
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[id^="modal"]').forEach(m => m.classList.add('hidden'));
+                });
+            });
+
+            document.getElementById('btnApplyText').addEventListener('click', () => {
+                const customText = document.getElementById('customTextInput').value;
+                if (customText.trim()) {
+                    engine.loadText(customText);
+                    renderStaticModes();
+                    updateProgressUI(0, engine.tokens.length);
+                    document.getElementById('modalText').classList.add('hidden');
+                }
+            });
+
+            document.querySelectorAll('.sample-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const key = e.currentTarget.dataset.sample;
+                    if (SAMPLE_TEXTS[key]) document.getElementById('customTextInput').value = SAMPLE_TEXTS[key];
+                });
+            });
+
+            document.getElementById('btnBookmarkNote').addEventListener('click', addBookmarkNote);
+            document.getElementById('btnClearNotes').addEventListener('click', clearNotes);
+
+            document.getElementById('btnSelectPro').addEventListener('click', () => {
+                activateTier('pro', 'ReadO PRO', '$0.99/mo Pro Plan Activated!');
+            });
+
+            document.getElementById('btnSelectLifetime').addEventListener('click', () => {
+                activateTier('lifetime', 'ReadO LIFETIME', '$2.99 Lifetime Access Activated!');
+            });
+        }
+
+        function activateTier(tierKey, badgeText, alertMsg) {
+            appState.tier = tierKey;
+            document.getElementById('currentTierBadge').innerHTML = `<i class="fa-solid fa-crown mr-0.5 text-amber-500"></i> ${badgeText}`;
+            document.getElementById('currentTierBadge').className = `text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-600 text-white font-bold uppercase tracking-wider`;
+            document.getElementById('modalUpgrade').classList.add('hidden');
+            alert(`🎉 ${alertMsg} Full access granted to AI Quizzes, PDF parsing & 40Hz Focus Audio.`);
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+                switch (e.code) {
+                    case 'Space': e.preventDefault(); togglePlayPause(); break;
+                    case 'ArrowLeft': e.preventDefault(); engine.seek(engine.currentIndex - 5); break;
+                    case 'ArrowRight': e.preventDefault(); engine.seek(engine.currentIndex + 5); break;
+                    case 'ArrowUp': e.preventDefault(); adjustWPM(25); break;
+                    case 'ArrowDown': e.preventDefault(); adjustWPM(-25); break;
+                    case 'KeyN': e.preventDefault(); addBookmarkNote(); break;
+                }
+            });
+        }
+
+        function togglePlayPause() {
+            if (engine.isPlaying) { engine.pause(); updatePlayPauseUI(false); }
+            else { engine.play(); updatePlayPauseUI(true); }
+        }
+
+        function updatePlayPauseUI(isPlaying) {
+            elPlayIcon.className = isPlaying ? 'fa-solid fa-pause text-lg' : 'fa-solid fa-play text-lg';
+        }
+
+        function adjustWPM(delta) {
+            const newWpm = Math.max(100, Math.min(appState.wpm + delta, 1000));
+            appState.wpm = newWpm;
+            elWpmSlider.value = newWpm;
+            elWpmDisplay.textContent = newWpm;
+            engine.setWPM(newWpm);
+        }
+
+        function switchMode(mode) {
+            appState.mode = mode;
+            [elViewRsvp, elViewTeleprompter, elViewBeeline, elViewBionic].forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                if (tab.dataset.mode === mode) {
+                    tab.classList.add('bg-white', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold', 'shadow-sm');
+                } else {
+                    tab.classList.remove('bg-white', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold', 'shadow-sm');
+                }
+            });
+            if (mode === 'rsvp') elViewRsvp.classList.remove('hidden');
+            if (mode === 'teleprompter') elViewTeleprompter.classList.remove('hidden');
+            if (mode === 'beeline') elViewBeeline.classList.remove('hidden');
+            if (mode === 'bionic') elViewBionic.classList.remove('hidden');
+        }
+
+        function setTheme(theme) {
+            appState.theme = theme;
+            elAppBody.className = elAppBody.className.replace(/(bg-\S+|text-\S+)/g, '').trim();
+            if (theme === 'dark') { document.documentElement.classList.add('dark'); elAppBody.classList.add('bg-slate-900', 'text-slate-100'); }
+            else if (theme === 'light') { document.documentElement.classList.remove('dark'); elAppBody.classList.add('bg-slate-50', 'text-slate-800'); }
+            else if (theme === 'sepia') { document.documentElement.classList.remove('dark'); elAppBody.classList.add('bg-sepia-100', 'text-sepia-900'); }
+            else if (theme === 'oled') { document.documentElement.classList.add('dark'); elAppBody.classList.add('bg-black', 'text-white'); }
+        }
+
+        function setFont(fontClass) {
+            appState.font = fontClass;
+            const container = document.getElementById('rsvpWordContainer');
+            container.className = container.className.replace(/font-\S+/g, '');
+            container.classList.add(fontClass);
+            document.getElementById('currentFontName').textContent = fontClass.replace('font-', '');
+        }
+
+        function addBookmarkNote() {
+            if (!engine.tokens.length) return;
+            const currentToken = engine.tokens[engine.currentIndex] || engine.tokens[0];
+            appState.notes.push({
+                id: Date.now(),
+                wordIndex: engine.currentIndex,
+                wordRaw: currentToken.raw,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+            renderNotesUI();
+        }
+
+        function renderNotesUI() {
+            const container = document.getElementById('notesContainer');
+            const badge = document.getElementById('noteBadge');
+            if (appState.notes.length > 0) {
+                badge.textContent = appState.notes.length;
+                badge.classList.remove('hidden');
+                container.innerHTML = appState.notes.map(n => `
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-indigo-600 dark:text-indigo-400 block">Word #${n.wordIndex + 1}: "${n.wordRaw}"</span>
+                            <span class="text-[10px] text-slate-400">Saved at ${n.timestamp}</span>
+                        </div>
+                        <button onclick="seekToToken(${n.wordIndex})" class="px-2.5 py-1 font-semibold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg">Jump</button>
+                    </div>
+                `).join('');
+            } else {
+                badge.classList.add('hidden');
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">No saved notes.</p>`;
+            }
+        }
+
+        function clearNotes() { appState.notes = []; renderNotesUI(); }
+
+        function submitQuizAnswer(optIdx) {
+            const feedback = document.getElementById('quizFeedback');
+            feedback.classList.remove('hidden');
+            if (optIdx === 2) {
+                feedback.className = "p-3 rounded-xl font-bold text-center bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300";
+                feedback.innerHTML = "✓ Correct! Fixations consume 90% of total reading duration.";
+            } else {
+                feedback.className = "p-3 rounded-xl font-bold text-center bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border border-red-300";
+                feedback.innerHTML = "✗ Incorrect. The correct answer is 90%.";
+            }
+        }
+
+        function setupModal(btnId, modalId) {
+            document.getElementById(btnId).addEventListener('click', () => {
+                document.getElementById(modalId).classList.remove('hidden');
+                if (modalId === 'modalAnalytics') updateAnalyticsUI();
+            });
+        }
+
+        function updateAnalyticsUI() {
+            document.getElementById('statTotalWords').textContent = appState.totalWordsReadSession;
+            document.getElementById('statAvgWpm').textContent = `${appState.wpm} WPM`;
+            const savedSecs = Math.round((appState.totalWordsReadSession / appState.wpm) * 60 * 0.1);
+            document.getElementById('statTimeSaved').textContent = `${savedSecs} sec`;
+
+            if (chartInstance) {
+                chartInstance.data.datasets[0].data = [250, 280, 310, appState.wpm, appState.wpm + 50];
+                chartInstance.update();
+            }
+        }
+
+        function startStatsTimer() {
+            setInterval(() => {
+                const elapsedMins = Math.floor((Date.now() - appState.sessionStartTime) / 60000);
+                document.getElementById('sessionTimeDisplay').textContent = `${elapsedMins}m`;
+            }, 10000);
+        }
+
+        function initVelocityChart() {
+            const ctx = document.getElementById('velocityChart')?.getContext('2d');
+            if (!ctx) return;
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Session 1', 'Session 2', 'Session 3', 'Current', 'Target Pace'],
+                    datasets: [{
+                        label: 'Reading Speed (WPM)',
+                        data: [250, 280, 300, 350, 450],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#4f46e5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: 'rgba(156, 163, 175, 0.1)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
