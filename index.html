@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
+    <!-- PDF.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    // Set worker source for PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReadO Pro - Cognitive Velocity & Reading Suite</title>
@@ -783,6 +789,43 @@
             updateProgressUI(0, engine.tokens.length);
         }
 
+        // Function to handle file selection (TXT, MD, PDF)
+async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.type === "application/pdf" || file.name.endsWith('.pdf')) {
+        await extractTextFromPDF(file);
+    } else {
+        // Handle plain text files (.txt, .md, .json)
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('customTextInput').value = e.target.result;
+        };
+        reader.readAsText(file);
+    }
+}
+
+// Function to extract text content from PDF
+async function extractTextFromPDF(file) {
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let fullText = '';
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(' ');
+            fullText += pageText + '\n\n';
+        }
+
+        document.getElementById('customTextInput').value = fullText;
+    } catch (error) {
+        console.error("Error reading PDF:", error);
+        alert("Failed to parse PDF file. Please ensure it contains selectable text.");
+    }
+}
         function handleEngineTick(token, index, total, delay, pauseReason) {
             appState.totalWordsReadSession++;
             document.getElementById('sessionWordsDisplay').textContent = appState.totalWordsReadSession;
@@ -873,6 +916,8 @@
             document.getElementById('btnSkipBack').addEventListener('click', () => engine.seek(engine.currentIndex - 5));
             document.getElementById('btnSkipForward').addEventListener('click', () => engine.seek(engine.currentIndex + 5));
 
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+            
             elWpmSlider.addEventListener('input', (e) => {
                 const val = parseInt(e.target.value);
                 appState.wpm = val;
